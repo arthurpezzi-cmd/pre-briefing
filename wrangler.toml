@@ -1,0 +1,19 @@
+name = "pre-briefing-worker"
+main = "worker.js"
+compatibility_date = "2026-01-01"
+# required by the `resend` SDK, which uses Node's Buffer for attachments
+compatibility_flags = ["nodejs_compat"]
+
+# Non-secret config can live here and be overridden per environment.
+# RESEND_API_KEY is NOT set here — it's a secret, set via `wrangler secret put`.
+#
+# FROM_EMAIL uses Resend's shared test domain (onboarding@resend.dev), which
+# needs no DNS setup at all. Its only limitation: it can only deliver to the
+# email address that owns the Resend account — which is fine here, since
+# TO_EMAIL below IS that same address, and it's the only inbox that ever
+# receives mail from this Worker. If you later buy your own domain, verify
+# it in Resend and switch FROM_EMAIL to an address on it.
+[vars]
+TO_EMAIL = "arthurpezzi28@gmail.com"
+FROM_EMAIL = "onboarding@resend.dev"
+ALLOWED_ORIGIN = "https://briefing.noonstudio.com"

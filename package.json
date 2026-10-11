@@ -1,0 +1,11 @@
+{
+  "name": "pre-briefing-worker",
+  "private": true,
+  "version": "1.0.0",
+  "dependencies": {
+    "resend": "^4.0.0"
+  },
+  "devDependencies": {
+    "wrangler": "^3.90.0"
+  }
+}

@@ -1,0 +1,1091 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>pré-briefing — noon studio</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,200..800&family=Bodoni+Moda:ital,wght@1,500&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --bg: #000000;
+        --panel: #0a0a0a;
+        --line: #262626;
+        --line-soft: #1a1a1a;
+        --ink: #f5f5f0;
+        --ink-dim: #8a8a85;
+        --ink-faint: #4a4a46;
+        --radius: 2px;
+        --lime: #bdf226;
+        --pink: #ff5ec4;
+        --purple: #66238c;
+        --red: #f20000;
+        --error: #f20000;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--ink);
+        font-family: "Bricolage Grotesque", system-ui, sans-serif;
+        color-scheme: dark;
+      }
+
+      /* ---------- progress bar ---------- */
+      .progressTrack {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 2px;
+        background: var(--line-soft);
+        z-index: 50;
+      }
+      .progressFill {
+        height: 100%;
+        width: 0%;
+        background: var(--ink);
+        transition: width 0.1s linear;
+      }
+
+      /* ---------- layout ---------- */
+      .page {
+        max-width: 720px;
+        margin: 0 auto;
+        padding: 72px 24px 120px;
+      }
+
+      header.hero {
+        margin-bottom: 56px;
+      }
+      header.hero h1 {
+        margin: 0;
+        font-size: 26px;
+        font-weight: 800;
+        letter-spacing: -0.02em;
+        line-height: 1;
+      }
+      header.hero h1 em {
+        font-family: "Bodoni Moda", "Times New Roman", serif;
+        font-style: italic;
+        font-weight: 500;
+        color: var(--ink-dim);
+        margin-left: 8px;
+      }
+      header.hero p {
+        margin: 18px 0 0;
+        font-size: 15px;
+        line-height: 1.6;
+        color: var(--ink-dim);
+        max-width: 52ch;
+      }
+
+      /* ---------- contact block ---------- */
+      .contactGrid {
+        margin-top: 36px;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 14px;
+      }
+      .contactGrid .field.full {
+        grid-column: 1 / -1;
+      }
+
+      /* ---------- sections ---------- */
+      section.block {
+        margin-top: 64px;
+        padding-top: 40px;
+        border-top: 1px solid var(--line-soft);
+      }
+      .blockHead {
+        display: flex;
+        align-items: baseline;
+        gap: 14px;
+        margin-bottom: 6px;
+      }
+      .blockNum {
+        font-family: "Bodoni Moda", serif;
+        font-style: italic;
+        font-weight: 500;
+        font-size: 28px;
+        line-height: 1;
+        flex: 0 0 auto;
+      }
+      .blockHead h2 {
+        margin: 0;
+        font-size: 19px;
+        font-weight: 700;
+        letter-spacing: -0.01em;
+      }
+      .blockObjective {
+        margin: 0 0 26px;
+        font-size: 13px;
+        font-style: italic;
+        color: var(--ink-faint);
+        line-height: 1.5;
+        max-width: 56ch;
+      }
+
+      .field {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        margin-bottom: 22px;
+      }
+      .field:last-child {
+        margin-bottom: 0;
+      }
+      .field label {
+        font-size: 13px;
+        color: var(--ink);
+        line-height: 1.45;
+      }
+      .field .hint {
+        font-size: 11.5px;
+        color: var(--ink-faint);
+      }
+
+      input[type="text"],
+      input[type="email"],
+      input[type="tel"],
+      textarea {
+        width: 100%;
+        background: #161616;
+        border: 1px solid #3a3a37;
+        color: var(--ink);
+        font-family: inherit;
+        font-size: 14px;
+        padding: 12px 13px;
+        border-radius: var(--radius);
+        transition:
+          border-color 0.15s ease,
+          background-color 0.15s ease;
+      }
+      input::placeholder,
+      textarea::placeholder {
+        color: var(--ink-faint);
+      }
+      input:hover,
+      textarea:hover {
+        border-color: #55554f;
+      }
+      input:focus,
+      textarea:focus {
+        outline: none;
+        border-color: var(--ink);
+        background: #1c1c1c;
+      }
+      textarea {
+        min-height: 92px;
+        resize: vertical;
+        line-height: 1.5;
+      }
+
+      .field.invalid input,
+      .field.invalid textarea {
+        border-color: var(--error);
+        background: rgba(242, 0, 0, 0.06);
+      }
+      .field .errorMsg {
+        display: none;
+        font-size: 11.5px;
+        color: var(--error);
+      }
+      .field.invalid .errorMsg {
+        display: block;
+      }
+
+      /* ---------- submit area ---------- */
+      .submitArea {
+        margin-top: 64px;
+        padding-top: 40px;
+        border-top: 1px solid var(--line-soft);
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 14px;
+      }
+      button.submitBtn {
+        font-family: inherit;
+        font-size: 14px;
+        font-weight: 600;
+        padding: 15px 28px;
+        background: var(--ink);
+        color: #000;
+        border: 1px solid var(--ink);
+        border-radius: var(--radius);
+        cursor: pointer;
+        transition:
+          background 0.15s ease,
+          color 0.15s ease,
+          opacity 0.15s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+      }
+      button.submitBtn:hover:not(:disabled) {
+        background: transparent;
+        color: var(--ink);
+      }
+      button.submitBtn:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+      }
+      .submitNote {
+        font-size: 12px;
+        color: var(--ink-faint);
+      }
+
+      .spinner {
+        width: 14px;
+        height: 14px;
+        border-radius: 50%;
+        border: 2px solid rgba(0, 0, 0, 0.25);
+        border-top-color: #000;
+        animation: spin 0.7s linear infinite;
+        display: none;
+      }
+      button.submitBtn.loading .spinner {
+        display: inline-block;
+      }
+      button.submitBtn.loading .btnLabel {
+        opacity: 0.7;
+      }
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+
+      .formState {
+        display: none;
+        margin-top: 14px;
+        font-size: 13px;
+        padding: 12px 14px;
+        border-radius: var(--radius);
+        border: 1px solid var(--line);
+      }
+      .formState.show {
+        display: block;
+      }
+      .formState.success {
+        border-color: var(--lime);
+        color: var(--lime);
+      }
+      .formState.error {
+        border-color: var(--error);
+        color: var(--error);
+      }
+
+      /* ---------- success screen ---------- */
+      .successScreen {
+        display: none;
+        text-align: center;
+        padding: 120px 24px;
+      }
+      .successScreen.show {
+        display: block;
+      }
+      .successScreen .mark {
+        width: 40px;
+        height: 40px;
+        margin: 0 auto 24px;
+        border-radius: 50%;
+        border: 1.5px solid var(--lime);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--lime);
+        font-size: 18px;
+      }
+      .successScreen h2 {
+        font-size: 22px;
+        margin: 0 0 12px;
+      }
+      .successScreen p {
+        font-size: 14px;
+        color: var(--ink-dim);
+        max-width: 46ch;
+        margin: 0 auto;
+        line-height: 1.6;
+      }
+
+      @media (max-width: 560px) {
+        .contactGrid {
+          grid-template-columns: 1fr;
+        }
+        .page {
+          padding: 48px 18px 100px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="progressTrack">
+      <div class="progressFill" id="progressFill"></div>
+    </div>
+
+    <div class="page" id="formPage">
+      <header class="hero">
+        <h1>noon<em>studio</em></h1>
+        <p>
+          pré-briefing de marca — um diagnóstico rápido do seu negócio, baseado
+          no Business Model Canvas, para começarmos o projeto de identidade
+          visual com a direção certa desde o primeiro rascunho.
+        </p>
+      </header>
+
+      <form id="briefingForm" novalidate>
+        <!-- contact -->
+        <div class="contactGrid">
+          <div class="field full">
+            <label for="f_nome">nome</label>
+            <input
+              type="text"
+              id="f_nome"
+              name="nome"
+              required
+              placeholder="seu nome completo"
+            />
+            <span class="errorMsg">preencha seu nome.</span>
+          </div>
+          <div class="field">
+            <label for="f_empresa">empresa / marca</label>
+            <input
+              type="text"
+              id="f_empresa"
+              name="empresa"
+              required
+              placeholder="nome do negócio"
+            />
+            <span class="errorMsg">preencha o nome da empresa.</span>
+          </div>
+          <div class="field">
+            <label for="f_email">e-mail</label>
+            <input
+              type="email"
+              id="f_email"
+              name="email"
+              required
+              placeholder="voce@email.com"
+            />
+            <span class="errorMsg">digite um e-mail válido.</span>
+          </div>
+          <div class="field full">
+            <label for="f_whatsapp">whatsapp</label>
+            <input
+              type="tel"
+              id="f_whatsapp"
+              name="whatsapp"
+              required
+              placeholder="(00) 00000-0000"
+            />
+            <span class="errorMsg">digite um telefone válido.</span>
+          </div>
+        </div>
+
+        <!-- 1. proposta de valor -->
+        <section class="block" data-accent="lime">
+          <div class="blockHead">
+            <span class="blockNum" style="color: var(--lime)">01</span>
+            <h2>
+              proposta de valor
+              <span style="color: var(--ink-dim); font-weight: 400"
+                >— o coração da marca</span
+              >
+            </h2>
+          </div>
+          <p class="blockObjective">
+            entender o que a marca realmente entrega de valor, além do produto
+            ou serviço físico, para traduzir isso em conceitos visuais.
+          </p>
+
+          <div class="field">
+            <label for="q1_1"
+              >qual é o principal problema do seu cliente que o seu negócio
+              resolve?</label
+            >
+            <textarea id="q1_1" name="q1_1" required></textarea>
+            <span class="errorMsg">esse campo é obrigatório.</span>
+          </div>
+          <div class="field">
+            <label for="q1_2"
+              >se a sua marca fosse uma pessoa, como você a descreveria em 3 a 5
+              palavras?</label
+            >
+            <textarea id="q1_2" name="q1_2" required></textarea>
+            <span class="errorMsg">esse campo é obrigatório.</span>
+          </div>
+          <div class="field">
+            <label for="q1_3"
+              >qual é o seu maior diferencial em relação aos
+              concorrentes?</label
+            >
+            <span class="hint">o que só você faz, ou faz muito melhor?</span>
+            <textarea id="q1_3" name="q1_3" required></textarea>
+            <span class="errorMsg">esse campo é obrigatório.</span>
+          </div>
+          <div class="field">
+            <label for="q1_4"
+              >qual é o valor emocional e intangível que você vende?</label
+            >
+            <span class="hint"
+              >ex: não vende relógios, vende status; não vende café, vende pausa
+              e conforto.</span
+            >
+            <textarea id="q1_4" name="q1_4" required></textarea>
+            <span class="errorMsg">esse campo é obrigatório.</span>
+          </div>
+        </section>
+
+        <!-- 2. segmentos de clientes -->
+        <section class="block" data-accent="pink">
+          <div class="blockHead">
+            <span class="blockNum" style="color: var(--pink)">02</span>
+            <h2>
+              segmentos de clientes
+              <span style="color: var(--ink-dim); font-weight: 400"
+                >— o público-alvo</span
+              >
+            </h2>
+          </div>
+          <p class="blockObjective">
+            definir para quem o design precisa ser atrativo e com quem ele
+            precisa se comunicar.
+          </p>
+
+          <div class="field">
+            <label for="q2_1">quem é o seu cliente ideal?</label>
+            <span class="hint"
+              >idade, gênero, estilo de vida, interesses e profissão.</span
+            >
+            <textarea id="q2_1" name="q2_1" required></textarea>
+            <span class="errorMsg">esse campo é obrigatório.</span>
+          </div>
+          <div class="field">
+            <label for="q2_2"
+              >quais são as principais dores, medos ou desejos desse cliente ao
+              buscar a sua solução?</label
+            >
+            <textarea id="q2_2" name="q2_2" required></textarea>
+            <span class="errorMsg">esse campo é obrigatório.</span>
+          </div>
+          <div class="field">
+            <label for="q2_3"
+              >seu negócio atende mais de um perfil de cliente? se sim, qual é o
+              principal?</label
+            >
+            <span class="hint"
+              >aquele que traz mais rentabilidade ou volume.</span
+            >
+            <textarea id="q2_3" name="q2_3" required></textarea>
+            <span class="errorMsg">esse campo é obrigatório.</span>
+          </div>
+        </section>
+
+        <!-- 3. relacionamento com clientes -->
+        <section class="block" data-accent="red">
+          <div class="blockHead">
+            <span class="blockNum" style="color: var(--red)">03</span>
+            <h2>
+              relacionamento com clientes
+              <span style="color: var(--ink-dim); font-weight: 400"
+                >— personalidade e tom de voz</span
+              >
+            </h2>
+          </div>
+          <p class="blockObjective">
+            definir como a marca interage com o público e qual estilo visual
+            apoia essa interação.
+          </p>
+
+          <div class="field">
+            <label for="q3_1"
+              >como você quer que o cliente se sinta ao interagir com a sua
+              marca pela primeira vez?</label
+            >
+            <textarea id="q3_1" name="q3_1" required></textarea>
+            <span class="errorMsg">esse campo é obrigatório.</span>
+          </div>
+          <div class="field">
+            <label for="q3_2">qual é o tom de voz predominante da marca?</label>
+            <span class="hint"
+              >ex: formal e sério, descontraído e jovem, técnico e especialista,
+              acolhedor e humano.</span
+            >
+            <textarea id="q3_2" name="q3_2" required></textarea>
+            <span class="errorMsg">esse campo é obrigatório.</span>
+          </div>
+          <div class="field">
+            <label for="q3_3"
+              >o atendimento é rápido e automatizado, ou consultivo, próximo e
+              hiper-personalizado?</label
+            >
+            <textarea id="q3_3" name="q3_3" required></textarea>
+            <span class="errorMsg">esse campo é obrigatório.</span>
+          </div>
+        </section>
+
+        <!-- 4. canais -->
+        <section class="block" data-accent="purple">
+          <div class="blockHead">
+            <span class="blockNum" style="color: var(--purple)">04</span>
+            <h2>
+              canais
+              <span style="color: var(--ink-dim); font-weight: 400"
+                >— pontos de contato visual</span
+              >
+            </h2>
+          </div>
+          <p class="blockObjective">
+            mapear os lugares físicos e digitais onde a identidade visual será
+            aplicada, para prever suas variações.
+          </p>
+
+          <div class="field">
+            <label for="q4_1"
+              >por quais canais os clientes descobrem a sua marca hoje?</label
+            >
+            <span class="hint"
+              >ex: instagram, indicações, pesquisa no google, fachada da
+              loja.</span
+            >
+            <textarea id="q4_1" name="q4_1" required></textarea>
+            <span class="errorMsg">esse campo é obrigatório.</span>
+          </div>
+          <div class="field">
+            <label for="q4_2"
+              >quais serão os principais materiais visuais que precisaremos
+              desenvolver?</label
+            >
+            <span class="hint"
+              >ex: cartões, uniformes, embalagens, site, templates para redes
+              sociais, sinalização.</span
+            >
+            <textarea id="q4_2" name="q4_2" required></textarea>
+            <span class="errorMsg">esse campo é obrigatório.</span>
+          </div>
+          <div class="field">
+            <label for="q4_3"
+              >onde ocorre o momento de "conversão" ou venda principal?</label
+            >
+            <span class="hint">é lá que o design precisará brilhar mais.</span>
+            <textarea id="q4_3" name="q4_3" required></textarea>
+            <span class="errorMsg">esse campo é obrigatório.</span>
+          </div>
+        </section>
+
+        <!-- 5. atividades principais -->
+        <section class="block" data-accent="lime">
+          <div class="blockHead">
+            <span class="blockNum" style="color: var(--lime)">05</span>
+            <h2>
+              atividades principais
+              <span style="color: var(--ink-dim); font-weight: 400"
+                >— a dinâmica do negócio</span
+              >
+            </h2>
+          </div>
+          <p class="blockObjective">
+            entender a rotina da empresa para criar uma marca fácil de usar no
+            dia a dia.
+          </p>
+
+          <div class="field">
+            <label for="q5_1"
+              >quais são as atividades essenciais que a sua equipe faz todos os
+              dias para entregar o produto ou serviço?</label
+            >
+            <textarea id="q5_1" name="q5_1" required></textarea>
+            <span class="errorMsg">esse campo é obrigatório.</span>
+          </div>
+          <div class="field">
+            <label for="q5_2"
+              >a identidade visual precisa resolver alguma necessidade prática
+              ou gargalo da sua rotina?</label
+            >
+            <span class="hint"
+              >ex: templates de fácil edição para o time de marketing,
+              embalagens mais rápidas de fechar, impressos com foco em
+              sustentabilidade.</span
+            >
+            <textarea id="q5_2" name="q5_2" required></textarea>
+            <span class="errorMsg">esse campo é obrigatório.</span>
+          </div>
+        </section>
+
+        <!-- 6. recursos principais -->
+        <section class="block" data-accent="pink">
+          <div class="blockHead">
+            <span class="blockNum" style="color: var(--pink)">06</span>
+            <h2>
+              recursos principais
+              <span style="color: var(--ink-dim); font-weight: 400"
+                >— o patrimônio existente</span
+              >
+            </h2>
+          </div>
+          <p class="blockObjective">
+            levantar os recursos atuais e entender quais ativos visuais já têm
+            reconhecimento do público.
+          </p>
+
+          <div class="field">
+            <label for="q6_1"
+              >qual é o recurso mais valioso da sua empresa hoje?</label
+            >
+            <span class="hint"
+              >ex: a equipe, a tecnologia, o método autoral, um ingrediente
+              secreto, o ponto comercial.</span
+            >
+            <textarea id="q6_1" name="q6_1" required></textarea>
+            <span class="errorMsg">esse campo é obrigatório.</span>
+          </div>
+          <div class="field">
+            <label for="q6_2"
+              >a empresa já possui algum elemento visual que tem muito
+              reconhecimento e DEVE ser mantido?</label
+            >
+            <span class="hint"
+              >cores específicas, logotipo antigo, ícone — e por quê.</span
+            >
+            <textarea id="q6_2" name="q6_2" required></textarea>
+            <span class="errorMsg">esse campo é obrigatório.</span>
+          </div>
+          <div class="field">
+            <label for="q6_3"
+              >existe algo que você definitivamente NÃO quer ver na sua nova
+              marca?</label
+            >
+            <span class="hint"
+              >ex: "não gosto da cor vermelha", "não quero tipografia com
+              serifa", "não quero símbolos literais".</span
+            >
+            <textarea id="q6_3" name="q6_3" required></textarea>
+            <span class="errorMsg">esse campo é obrigatório.</span>
+          </div>
+        </section>
+
+        <!-- 7. parcerias principais -->
+        <section class="block" data-accent="red">
+          <div class="blockHead">
+            <span class="blockNum" style="color: var(--red)">07</span>
+            <h2>
+              parcerias principais
+              <span style="color: var(--ink-dim); font-weight: 400"
+                >— o ecossistema</span
+              >
+            </h2>
+          </div>
+          <p class="blockObjective">
+            identificar se a marca precisa coexistir harmonicamente com outras
+            marcas do mercado.
+          </p>
+
+          <div class="field">
+            <label for="q7_1"
+              >sua empresa depende de parceiros vitais ou plataformas
+              específicas para funcionar?</label
+            >
+            <span class="hint">ex: ifood, parceiros de tecnologia.</span>
+            <textarea id="q7_1" name="q7_1" required></textarea>
+            <span class="errorMsg">esse campo é obrigatório.</span>
+          </div>
+          <div class="field">
+            <label for="q7_2"
+              >a nova identidade será exibida frequentemente ao lado do logotipo
+              de parceiros ou patrocinadores?</label
+            >
+            <span class="hint">se sim, quem são eles?</span>
+            <textarea id="q7_2" name="q7_2" required></textarea>
+            <span class="errorMsg">esse campo é obrigatório.</span>
+          </div>
+        </section>
+
+        <!-- 8. estrutura de custos e fontes de receita -->
+        <section class="block" data-accent="purple">
+          <div class="blockHead">
+            <span class="blockNum" style="color: var(--purple)">08</span>
+            <h2>
+              custos e receita
+              <span style="color: var(--ink-dim); font-weight: 400"
+                >— o posicionamento de mercado</span
+              >
+            </h2>
+          </div>
+          <p class="blockObjective">
+            alinhar a estética da marca (premium vs. acessível) ao modelo
+            financeiro e ticket médio.
+          </p>
+
+          <div class="field">
+            <label for="q8_1">qual é o principal modelo de cobrança?</label>
+            <span class="hint"
+              >ex: venda de produto único, serviço recorrente/mensalidade,
+              projetos de alto valor.</span
+            >
+            <textarea id="q8_1" name="q8_1" required></textarea>
+            <span class="errorMsg">esse campo é obrigatório.</span>
+          </div>
+          <div class="field">
+            <label for="q8_2"
+              >como você considera o preço do seu produto/serviço em relação ao
+              mercado?</label
+            >
+            <span class="hint"
+              >mais barato/foco em volume, na média, ou mais caro/premium e
+              exclusivo.</span
+            >
+            <textarea id="q8_2" name="q8_2" required></textarea>
+            <span class="errorMsg">esse campo é obrigatório.</span>
+          </div>
+          <div class="field">
+            <label for="q8_3"
+              >a estética visual deve comunicar "acessibilidade e agilidade" ou
+              "luxo, exclusividade e alto valor agregado"?</label
+            >
+            <textarea id="q8_3" name="q8_3" required></textarea>
+            <span class="errorMsg">esse campo é obrigatório.</span>
+          </div>
+        </section>
+
+        <div class="submitArea">
+          <button type="submit" class="submitBtn" id="submitBtn">
+            <span class="spinner"></span>
+            <span class="btnLabel">enviar pré-briefing</span>
+          </button>
+          <span class="submitNote"
+            >ao enviar, geramos um pdf com suas respostas e encaminhamos
+            diretamente para o estúdio.</span
+          >
+          <div class="formState" id="formState"></div>
+        </div>
+      </form>
+    </div>
+
+    <div class="successScreen" id="successScreen">
+      <div class="mark">✓</div>
+      <h2>pré-briefing recebido</h2>
+      <p>
+        obrigado, <span id="successName">—</span>. o pdf com suas respostas já
+        chegou no estúdio. em breve alguém do time vai entrar em contato pelo
+        e-mail ou whatsapp informados para dar sequência ao projeto.
+      </p>
+    </div>
+
+    <!-- jsPDF (client-side PDF generation — the PDF is built entirely in the browser, never on the Worker) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.2/jspdf.umd.min.js"></script>
+    <script>
+      (function () {
+        "use strict";
+
+        // ======================================================================
+        // CONFIG — point this at your deployed Cloudflare Worker URL
+        // ======================================================================
+        var WORKER_URL =
+          "https://pre-briefing-worker.briefignoonstudio.workers.dev";
+
+        var BRAND = {
+          ink: "#f5f5f0",
+          lime: "#bdf226",
+          pink: "#ff5ec4",
+          purple: "#66238c",
+          red: "#f20000",
+        };
+
+        var form = document.getElementById("briefingForm");
+        var submitBtn = document.getElementById("submitBtn");
+        var formState = document.getElementById("formState");
+        var formPage = document.getElementById("formPage");
+        var successScreen = document.getElementById("successScreen");
+        var successName = document.getElementById("successName");
+        var progressFill = document.getElementById("progressFill");
+
+        // ---------- scroll progress ----------
+        function updateProgress() {
+          var h = document.documentElement;
+          var scrolled = h.scrollTop;
+          var max = h.scrollHeight - h.clientHeight;
+          var pct = max > 0 ? (scrolled / max) * 100 : 0;
+          progressFill.style.width = pct + "%";
+        }
+        document.addEventListener("scroll", updateProgress);
+        updateProgress();
+
+        // ---------- gather questions by section, for both validation and the PDF ----------
+        var SECTIONS = Array.prototype.map.call(
+          document.querySelectorAll("section.block"),
+          function (sec) {
+            var num = sec.querySelector(".blockNum").textContent.trim();
+            var title = sec
+              .querySelector("h2")
+              .childNodes[0].textContent.trim();
+            var questions = Array.prototype.map.call(
+              sec.querySelectorAll(".field"),
+              function (f) {
+                var label = f.querySelector("label");
+                var textarea = f.querySelector("textarea");
+                return {
+                  label: label ? label.textContent.trim() : "",
+                  field: textarea,
+                };
+              },
+            );
+            return { num: num, title: title, questions: questions };
+          },
+        );
+
+        // ---------- validation ----------
+        function showFieldError(fieldEl, show) {
+          fieldEl.classList.toggle("invalid", !!show);
+        }
+
+        function isValidEmail(v) {
+          return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
+        }
+        function isValidPhone(v) {
+          return v.replace(/\D/g, "").length >= 10;
+        }
+
+        function validateForm() {
+          var firstInvalid = null;
+          var allFields = form.querySelectorAll(".field");
+
+          allFields.forEach(function (f) {
+            var input = f.querySelector("input, textarea");
+            if (!input || !input.hasAttribute("required")) return;
+
+            var valid = input.value.trim().length > 0;
+            if (valid && input.type === "email")
+              valid = isValidEmail(input.value.trim());
+            if (valid && input.type === "tel")
+              valid = isValidPhone(input.value.trim());
+
+            showFieldError(f, !valid);
+            if (!valid && !firstInvalid) firstInvalid = f;
+          });
+
+          if (firstInvalid) {
+            firstInvalid.scrollIntoView({
+              behavior: "smooth",
+              block: "center",
+            });
+            var input = firstInvalid.querySelector("input, textarea");
+            if (input)
+              setTimeout(function () {
+                input.focus();
+              }, 300);
+          }
+
+          return !firstInvalid;
+        }
+
+        // clear a field's error state as soon as the person starts fixing it
+        form.addEventListener("input", function (e) {
+          var field = e.target.closest(".field");
+          if (field) showFieldError(field, false);
+        });
+
+        // ---------- PDF generation ----------
+        function wrapLines(doc, text, maxWidth) {
+          return doc.splitTextToSize(text || "—", maxWidth);
+        }
+
+        function buildPdf(data) {
+          var jsPDFCtor = window.jspdf.jsPDF;
+          var doc = new jsPDFCtor({ unit: "pt", format: "a4" });
+
+          var pageW = doc.internal.pageSize.getWidth();
+          var pageH = doc.internal.pageSize.getHeight();
+          var margin = 56;
+          var contentW = pageW - margin * 2;
+          var y = 0;
+
+          function drawHeader() {
+            doc.setFillColor(0, 0, 0);
+            doc.rect(0, 0, pageW, 86, "F");
+            doc.setTextColor(245, 245, 240);
+            doc.setFont("helvetica", "bold");
+            doc.setFontSize(20);
+            doc.text("noon", margin, 50);
+            var noonW = doc.getTextWidth("noon");
+            doc.setFont("times", "italic");
+            doc.setFontSize(20);
+            doc.text(" studio", margin + noonW, 50);
+            doc.setFont("helvetica", "normal");
+            doc.setFontSize(9.5);
+            doc.setTextColor(160, 160, 155);
+            doc.text("pré-briefing de marca", margin, 68);
+            y = 118;
+          }
+
+          function newPageIfNeeded(nextBlockHeight) {
+            if (y + nextBlockHeight > pageH - margin) {
+              doc.addPage();
+              y = margin;
+            }
+          }
+
+          function heading(text) {
+            newPageIfNeeded(40);
+            doc.setTextColor(0, 0, 0);
+            doc.setFont("helvetica", "bold");
+            doc.setFontSize(14);
+            doc.text(text, margin, y);
+            y += 10;
+            doc.setDrawColor(220, 220, 220);
+            doc.line(margin, y, margin + contentW, y);
+            y += 22;
+          }
+
+          function qa(label, answer) {
+            var labelLines = wrapLines(doc, label, contentW);
+            var answerLines = wrapLines(doc, answer, contentW);
+            var blockHeight =
+              labelLines.length * 13 + answerLines.length * 13 + 18;
+            newPageIfNeeded(blockHeight);
+
+            doc.setFont("helvetica", "bold");
+            doc.setFontSize(10);
+            doc.setTextColor(40, 40, 40);
+            doc.text(labelLines, margin, y);
+            y += labelLines.length * 13 + 4;
+
+            doc.setFont("helvetica", "normal");
+            doc.setFontSize(10.5);
+            doc.setTextColor(10, 10, 10);
+            doc.text(answerLines, margin, y);
+            y += answerLines.length * 13 + 18;
+          }
+
+          drawHeader();
+
+          heading("dados de contato");
+          qa("nome", data.nome);
+          qa("empresa / marca", data.empresa);
+          qa("e-mail", data.email);
+          qa("whatsapp", data.whatsapp);
+          y += 10;
+
+          data.sections.forEach(function (sec) {
+            heading(sec.num + ". " + sec.title);
+            sec.questions.forEach(function (q) {
+              qa(q.label, q.answer);
+            });
+            y += 6;
+          });
+
+          return doc;
+        }
+
+        // ---------- submit flow ----------
+        function setLoading(isLoading) {
+          submitBtn.disabled = isLoading;
+          submitBtn.classList.toggle("loading", isLoading);
+        }
+
+        function showFormState(kind, message) {
+          formState.textContent = message;
+          formState.className = "formState show " + kind;
+        }
+
+        form.addEventListener("submit", function (e) {
+          e.preventDefault();
+          formState.className = "formState";
+
+          if (!validateForm()) {
+            showFormState(
+              "error",
+              "faltam alguns campos obrigatórios — role a página até o destaque em vermelho.",
+            );
+            return;
+          }
+
+          setLoading(true);
+
+          var data = {
+            nome: document.getElementById("f_nome").value.trim(),
+            empresa: document.getElementById("f_empresa").value.trim(),
+            email: document.getElementById("f_email").value.trim(),
+            whatsapp: document.getElementById("f_whatsapp").value.trim(),
+            sections: SECTIONS.map(function (sec) {
+              return {
+                num: sec.num,
+                title: sec.title,
+                questions: sec.questions.map(function (q) {
+                  return { label: q.label, answer: q.field.value.trim() };
+                }),
+              };
+            }),
+          };
+
+          var doc;
+          try {
+            doc = buildPdf(data);
+          } catch (err) {
+            setLoading(false);
+            showFormState(
+              "error",
+              "não foi possível gerar o pdf (" +
+                err.message +
+                "). tente novamente.",
+            );
+            return;
+          }
+
+          var pdfDataUri = doc.output("datauristring");
+          var pdfBase64 = pdfDataUri.split(",")[1];
+          var filename =
+            "pre-briefing-" +
+            data.empresa
+              .toLowerCase()
+              .replace(/[^a-z0-9]+/g, "-")
+              .replace(/(^-|-$)/g, "") +
+            ".pdf";
+
+          fetch(WORKER_URL, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              filename: filename,
+              pdfBase64: pdfBase64,
+              clientName: data.nome,
+              clientEmail: data.email,
+              clientCompany: data.empresa,
+            }),
+          })
+            .then(function (res) {
+              if (!res.ok)
+                throw new Error("falha no envio (" + res.status + ")");
+              return res.json().catch(function () {
+                return {};
+              });
+            })
+            .then(function () {
+              setLoading(false);
+              successName.textContent = data.nome;
+              formPage.style.display = "none";
+              successScreen.classList.add("show");
+              window.scrollTo(0, 0);
+            })
+            .catch(function (err) {
+              setLoading(false);
+              showFormState(
+                "error",
+                "o pdf foi gerado, mas o envio falhou (" +
+                  err.message +
+                  "). verifique sua conexão e tente novamente.",
+              );
+            });
+        });
+      })();
+    </script>
+  </body>
+</html>
