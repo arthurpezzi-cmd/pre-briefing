@@ -16,4 +16,4 @@ compatibility_flags = ["nodejs_compat"]
 [vars]
 TO_EMAIL = "arthurpezzi28@gmail.com"
 FROM_EMAIL = "onboarding@resend.dev"
-ALLOWED_ORIGIN = "https://briefing.noonstudio.com"
+ALLOWED_ORIGIN = "https://pre-briefing-index.noonstudio.workers.dev"
